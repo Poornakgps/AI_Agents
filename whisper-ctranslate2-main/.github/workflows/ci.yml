@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  check-code-format:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dev tools
+        run: |
+          pip install --no-cache-dir -e .[dev]
+
+      - name: Check code format with Black
+        run: |
+          black --check src/ tests/ e2e-tests/
+
+      - name: Check code style with Flake8
+        if: ${{ always() }}
+        run: |
+          flake8 src/ tests/ e2e-tests/
+
+      - name: Check code style with isort
+        if: ${{ always() }}
+        run: |
+          isort --check-only src/ tests/ e2e-tests/
+
+  run-tests:
+    environment: CI/CD
+    strategy:
+      matrix:
+         os: [ ubuntu-22.04, windows-latest ]
+         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ubuntu dependency
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get install libportaudio2 -y
+
+      - name: Install module
+        run: |
+          pip install --no-cache-dir wheel
+          pip install --no-cache-dir -e .[dev]
+
+      - name: Run tests
+        run: |
+          make run-tests
+
+      - name: Run e2e tests
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      
+        run: |
+          make install-dependencies-e2e-tests
+          make run-e2e-tests

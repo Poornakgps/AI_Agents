@@ -1,0 +1,27 @@
+phidata  # ok
+python-dotenv # ok
+# yfinance
+# packaging
+duckduckgo-search # ok
+fastapi # ok
+uvicorn # ok
+groq # ok
+# sqlalchemy # ok
+# pgvector
+# psycopg[binary]
+python-docx
+pypdf
+pandas # ok
+streamlit # ok
+openpyxl
+llama-stack # ok
+# torch   # ok
+tokenizers
+transformers # ok
+langchain # ok
+langchain-google-genai # ok
+langchain-community # ok
+google-generativeai # ok
+faiss-cpu # ok
+pydantic
+python-multipart

@@ -1,0 +1,6 @@
+numpy
+faster-whisper>=1.1.1
+ctranslate2
+tqdm
+sounddevice
+numpy
